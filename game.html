@@ -19474,9 +19474,17 @@
       refreshTitle();
     </script>
     <script>
+      /* Fullscreen: request it synchronously inside a real user click,
+         on the game's own DOM buttons. The old code only tried on load
+         (no gesture, the browser always rejects that) and once on the
+         first pointerdown, which the new tab focus or the canvas walk
+         handler could consume before it ever ran. A click on New Game
+         is a real gesture in this window, so it is the primary trigger.
+         No visible Fullscreen button is added anywhere. */
       (function () {
         function goFullscreen() {
           try {
+            if (document.fullscreenElement) return;
             var el = document.documentElement;
             if (el && el.requestFullscreen) {
               var p = el.requestFullscreen();
@@ -19484,9 +19492,28 @@
             }
           } catch (e) {}
         }
-        goFullscreen();
-        document.addEventListener("pointerdown", goFullscreen, { once: true });
-        document.addEventListener("keydown", goFullscreen, { once: true });
+        function armFallback() {
+          document.addEventListener("pointerdown", goFullscreen);
+          document.addEventListener("keydown", goFullscreen);
+        }
+        function disarmFallback() {
+          if (document.fullscreenElement) {
+            document.removeEventListener("pointerdown", goFullscreen);
+            document.removeEventListener("keydown", goFullscreen);
+          }
+        }
+        document.addEventListener("fullscreenchange", disarmFallback);
+        var ids = ["btn-new", "btn-continue", "btn-days", "btn-settings",
+          "btn-achievements", "btn-new-game-yes", "btn-fired-new",
+          "btn-killed-new", "btn-walked-new", "btn-timeout-new",
+          "btn-handedin-new"];
+        ids.forEach(function (id) {
+          var b = document.getElementById(id);
+          if (b) b.addEventListener("click", goFullscreen);
+        });
+        var form = document.getElementById("apply-form");
+        if (form) form.addEventListener("submit", goFullscreen);
+        armFallback();
       })();
     </script>
   </body>

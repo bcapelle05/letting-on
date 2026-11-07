@@ -165,11 +165,13 @@
               }
             } catch (e) {}
           }
+          /* The opener cannot fullscreen the new window reliably:
+             the request needs a real gesture inside that window, so
+             game.html now does it on its New Game click. This load
+             attempt is kept only as a best effort, never relied on. */
           try {
             if (win.document.readyState === "complete") goFullscreen();
             else win.addEventListener("load", goFullscreen);
-            win.document.addEventListener("pointerdown", goFullscreen, { once: true });
-            win.document.addEventListener("keydown", goFullscreen, { once: true });
           } catch (e) {}
           setTimeout(goFullscreen, 800);
         });
