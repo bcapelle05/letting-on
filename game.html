@@ -19473,7 +19473,6 @@
       renderSettings();
       refreshTitle();
     </script>
-  <button id="btn-fullscreen" type="button" style="position: fixed; top: 10px; right: 10px; z-index: 9999; padding: 8px 14px; font-size: 14px; cursor: pointer;">Fullscreen</button>
     <script>
       (function () {
         function goFullscreen() {
@@ -19485,8 +19484,7 @@
             }
           } catch (e) {}
         }
-        var b = document.getElementById("btn-fullscreen");
-        if (b) b.addEventListener("click", goFullscreen);
+        goFullscreen();
         document.addEventListener("pointerdown", goFullscreen, { once: true });
         document.addEventListener("keydown", goFullscreen, { once: true });
       })();

@@ -153,7 +153,7 @@
             note.hidden = false;
             return;
           }
-          note.textContent = "The game opened in a new window. If it is not fullscreen, use the Fullscreen button in the game window.";
+          note.textContent = "The game opened in a new window.";
           note.hidden = false;
           btn.textContent = "Play Letting On, new window opened";
           function goFullscreen() {
@@ -168,6 +168,8 @@
           try {
             if (win.document.readyState === "complete") goFullscreen();
             else win.addEventListener("load", goFullscreen);
+            win.document.addEventListener("pointerdown", goFullscreen, { once: true });
+            win.document.addEventListener("keydown", goFullscreen, { once: true });
           } catch (e) {}
           setTimeout(goFullscreen, 800);
         });
