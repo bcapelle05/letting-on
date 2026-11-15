@@ -133,6 +133,7 @@
       <div class="actions">
         <button class="btn-play" id="btn-play" type="button">Play Letting On</button>
         <a class="btn-feedback" href="https://docs.google.com/forms/d/e/1FAIpQLSc2gC7AHh2psDS_z9H6us-jEZAV9JtRtd-ZpZPE4ZofzGTG7Q/viewform" target="_blank" rel="noopener">Leave Playtest Feedback</a>
+        <button class="btn-play" id="btn-demo" type="button">Play Demo</button>
       </div>
 <footer>
         Mock store page for playtesting. Not affiliated with Valve or Steam, and nothing here is for sale yet.
@@ -141,6 +142,32 @@
     <script>
       (function () {
         var btn = document.getElementById("btn-play");
+        var demoBtn = document.getElementById("btn-demo");
+        demoBtn.addEventListener("click", function () {
+          var win = window.open("demo.html", "_blank");
+          if (!win) {
+            note.textContent = "Your browser blocked the new window. Please allow popups for this site, then press Play Demo again.";
+            note.hidden = false;
+            return;
+          }
+          note.textContent = "The demo opened in a new window.";
+          note.hidden = false;
+          demoBtn.textContent = "Play Demo, new window opened";
+          function goFullscreenDemo() {
+            try {
+              var el = win.document.documentElement;
+              if (el && el.requestFullscreen) {
+                var p = el.requestFullscreen();
+                if (p && p.catch) p.catch(function () {});
+              }
+            } catch (e) {}
+          }
+          try {
+            if (win.document.readyState === "complete") goFullscreenDemo();
+            else win.addEventListener("load", goFullscreenDemo);
+          } catch (e) {}
+        });
+
         var note = document.createElement("p");
         note.id = "play-note";
         note.style.cssText = "font-size: 14px; color: #8f98a0; margin: 10px 0 0;";
